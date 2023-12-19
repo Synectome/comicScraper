@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.options import Options
 import time
 import os
 import datetime
@@ -47,7 +48,10 @@ def setup():
     # Create a webdriver instance (for Chrome in this example)
     # driver = webdriver.Chrome()
     # or firefox
-    driver = webdriver.Firefox()
+    firefox_options = Options()
+    firefox_options.add_argument('--headless')
+
+    driver = webdriver.Firefox(options=firefox_options)
     driver.maximize_window()
     driver.implicitly_wait(10)
 
@@ -88,7 +92,7 @@ if __name__ == "__main__":
         if not os.path.exists(file_path):
             # there is no saved list of the Comic urls, so we need to do that
             d.get(url)
-            comic_urls = get_comics_urls(d)
+            comic_urls = get_comics_urls(d, 60)
             print("number of comic urls collected = ", len(comic_urls))
             save2file(comic_urls, comicURLsFileName)
         else:
@@ -99,7 +103,7 @@ if __name__ == "__main__":
             d.get(comic_url)
             make_comic_obj(d)
             break
-
-    finally:
-        # Close the browser window
         d.quit()
+    finally:
+        pass
+
